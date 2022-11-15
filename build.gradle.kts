@@ -1,5 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val ktor_version: String = "2.1.3"
+
+
+
 plugins {
     kotlin("jvm") version "1.7.10"
     application
@@ -14,6 +18,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("io.ktor:ktor-network:$ktor_version")
     implementation("org.bouncycastle:bc-fips:1.0.2.3")
 
 }

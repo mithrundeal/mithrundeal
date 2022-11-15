@@ -14,6 +14,8 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("org.bouncycastle:bc-fips:1.0.2.3")
+
 }
 
 tasks.test {

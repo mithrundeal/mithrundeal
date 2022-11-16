@@ -4,6 +4,7 @@ import io.ktor.utils.io.*
 import kotlinx.coroutines.*
 import java.net.ConnectException
 import java.net.NetworkInterface
+import kotlin.concurrent.fixedRateTimer
 
 class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
 
@@ -41,23 +42,15 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
                     println("Accepted ${socket.localAddress}")
                     launch {
                         val receiveChannel = socket.openReadChannel()
-                        //val sendChannel = socket.openWriteChannel(autoFlush = true)
-
-                        //Post PublicKey
-                        //sendChannel.writeStringUtf8(cryptoManager.getPublicKey())
-
-                        // Post ClientList
-                        //sendChannel.writeStringUtf8(dataManager.getClientList().toString())
-
-                        //sendChannel.writeStringUtf8("Please enter your name\n")
+                        val sendChannel = socket.openWriteChannel(autoFlush = true)
                         try {
                             while (true) {
                                 val name = receiveChannel.readUTF8Line()
                                 println(name)
-                                //sendChannel.writeStringUtf8("Hello, $name!\n")
                             }
+
                         } catch (e: Throwable) {
-                            //socket.close()
+                            socket.close()
                         }
                     }
                 }catch (e:Exception)
@@ -74,12 +67,13 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
         try {
             val socket = aSocket(selectorManager).tcp().connect(remoteClientIP, port)
             println("Trying connect /$remoteClientIP:$port")
+
             val sendChannel = socket.openWriteChannel(autoFlush = true)
-            sendChannel.writeStringUtf8("test write")
+            sendChannel.writeFully((cryptoManager.getPublicKey()+"\n\r").toByteArray())
 
             return socket
         }catch (e: ConnectException) {
-            //println(e.message)
+            println(e.message)
         }
 
         return null
@@ -93,13 +87,12 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
             /*if(x == localAddressLastPart)
                     continue*/
 
-            //connections.add()
             val newSocket: Deferred<Socket?> = async<Socket?> {
                 val socket:Socket? = connectToClient(x)
                 return@async socket
             }
             newSocket.invokeOnCompletion {
-                //connections.remove(newSocket)
+                connections.remove(newSocket)
             }
             connections.add(newSocket)
         }

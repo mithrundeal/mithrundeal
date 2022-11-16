@@ -20,6 +20,7 @@ dependencies {
     testImplementation(kotlin("test"))
     implementation("io.ktor:ktor-network:$ktor_version")
     implementation("org.bouncycastle:bc-fips:1.0.2.3")
+    implementation(kotlin("stdlib-jdk8"))
 
 }
 
@@ -33,4 +34,12 @@ tasks.withType<KotlinCompile> {
 
 application {
     mainClass.set("MainKt")
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
 }

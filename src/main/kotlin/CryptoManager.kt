@@ -1,12 +1,35 @@
+import crypto.RSAHelper
+import java.security.KeyPair
+import java.security.PrivateKey
+import java.security.PublicKey
 import kotlin.random.Random
 
 class CryptoManager {
+    lateinit var rsaKeyPair: KeyPair
+
     init {
         // Crypto Setup, Create Cert, Create Public Key
+        rsaKeyPair = RSAHelper.getKeyPair()
     }
-    public fun getPublicKey(): String {
-        return "test_publi_key_${Random.nextInt(0, 100)}"
+
+    fun getPublicKey(): PublicKey {
+        //return "test_publi_key_${Random.nextInt(0, 100)}"
+        return rsaKeyPair.public
     }
-    public fun encryption(data:String) {}
-    public fun decryption(publicKey:String, data:String) {}
+
+    fun getPrivateKey(): PrivateKey {
+        return rsaKeyPair.private
+    }
+
+    fun rsaEncryption(plainData: String): ByteArray {
+        return RSAHelper.rsaEncrypt(rsaKeyPair.public, plainData.toByteArray())
+    }
+
+    fun rsaEncryption(plainData: ByteArray): ByteArray {
+        return RSAHelper.rsaEncrypt(rsaKeyPair.public, plainData)
+    }
+
+    fun rsaDecryption(encryptData: ByteArray): ByteArray {
+        return RSAHelper.rsaDecrypt(rsaKeyPair.private, encryptData)
+    }
 }

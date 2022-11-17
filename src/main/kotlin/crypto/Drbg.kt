@@ -6,6 +6,7 @@ import org.bouncycastle.crypto.fips.FipsDRBG
 import org.bouncycastle.crypto.fips.FipsSecureRandom
 import org.bouncycastle.crypto.util.BasicEntropySourceProvider
 import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider
+import java.security.KeyPair
 import java.security.SecureRandom
 
 class Drbg {

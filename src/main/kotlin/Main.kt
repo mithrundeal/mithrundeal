@@ -12,25 +12,15 @@ import java.util.*
 
 fun main(args: Array<String>) {
 
-    runBlocking {
-        async {
-            val mithrundealNetwork: Mithrundeal = Mithrundeal("my-network-secret-separator")
-            mithrundealNetwork.start()
-        }
-    }
-
-
-
-
+    //runBlocking {
+    //    async {
+    //        val mithrundealNetwork: Mithrundeal = Mithrundeal("my-network-secret-separator")
+    //        mithrundealNetwork.start()
+    //    }
+    //}
     CryptoInit.setSecurityProvider()
 
-    println(Drbg.getSecureRandom().nextInt())
-    println(Drbg.getSecureRandom().nextInt())
-    println(Drbg.getSecureRandom().nextInt())
-
     println(Drbg.getSecureRandom())
-
-    val secureRandom:SecureRandom=SecureRandom()
-    println(secureRandom.provider)
+    println(SecureRandom().provider)
 
 }

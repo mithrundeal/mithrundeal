@@ -10,11 +10,8 @@ class DataManager {
         private var connection: Connection? = null
 
         init {
-            val sJdbc = "jdbc:sqlite:"
-            val dbPath = ""
-            val dbName = "data.db"
             try {
-                connection = DriverManager.getConnection(sJdbc + dbPath + dbName)
+                connection = DriverManager.getConnection("jdbc:sqlite::memory:")
                 connection!!.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS clients(ip_last_part INTEGER, name TEXT, public_key TEXT)")
                 println("DB Connected.")
             } catch (ex: SQLException) {
@@ -33,8 +30,10 @@ class DataManager {
         }
 
         fun getClientByPublicKey(publicKey: String): Client {
-            val sql = "SELECT * FROM clients WHERE public_key = $publicKey"
-            val rs = connection!!.createStatement().executeQuery(sql)
+            val sql = "SELECT * FROM clients WHERE public_key = ?"
+            val preparedStatement = connection!!.prepareStatement(sql)
+            preparedStatement.setString(1, publicKey)
+            val rs = preparedStatement.executeQuery()
             return Client(
                 IPLastPart = rs.getInt("ip_last_part"),
                 name = rs.getString("name"),

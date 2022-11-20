@@ -10,14 +10,15 @@ class CryptoInit {
          * adding bc-fips security provider at first index to so every object can use it
          */
         fun setSecurityProvider() {
-            Security.insertProviderAt(BouncyCastleFipsProvider(), 1)
+            Security.addProvider(BouncyCastleFipsProvider())
+            //TODO:Security add, inserting for first index causing exception on ktor
         }
 
         /**
          * setting jvm properties for both using of enc/sign
          */
         fun setJVMProperties() {
-            var properties = Properties()
+            val properties = Properties()
             properties.setProperty("org.bouncycastle.rsa.allow_multi_use", "true")
             System.setProperties(properties)
         }

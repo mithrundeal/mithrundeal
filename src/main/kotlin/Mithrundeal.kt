@@ -69,7 +69,7 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
             println("Trying connect /$remoteClientIP:$port")
 
             val sendChannel = socket.openWriteChannel(autoFlush = true)
-            sendChannel.writeFully((cryptoManager.getPublicKey()+"\n\r").toByteArray())
+            //sendChannel.writeFully((cryptoManager.getPublicKey()+"\n\r").toByteArray())
 
             return socket
         }catch (e: ConnectException) {

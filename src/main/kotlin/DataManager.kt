@@ -22,6 +22,7 @@ class DataManager {
         fun getClientByIP(IPLastPart: Int): Client {
             val sql = "SELECT * FROM clients WHERE ip_last_part = $IPLastPart"
             val rs = connection!!.createStatement().executeQuery(sql)
+            connection!!.close()
             return Client(
                 IPLastPart = rs.getInt("ip_last_part"),
                 name = rs.getString("name"),
@@ -34,6 +35,7 @@ class DataManager {
             val preparedStatement = connection!!.prepareStatement(sql)
             preparedStatement.setString(1, publicKey)
             val rs = preparedStatement.executeQuery()
+            connection!!.close()
             return Client(
                 IPLastPart = rs.getInt("ip_last_part"),
                 name = rs.getString("name"),
@@ -52,12 +54,16 @@ class DataManager {
                 )
                 clients += client
             }
+            connection!!.close()
             return clients
         }
 
         fun saveClient(client: Client) {
-            val sql = "INSERT INTO clients values(${client.IPLastPart}, '${client.name}', '${client.publicKey}')"
-            connection!!.createStatement().executeUpdate(sql)
+            val sql = "INSERT INTO clients values(${client.IPLastPart}, ?, ?)"
+            val preparedStatement = connection!!.prepareStatement(sql)
+            preparedStatement.setString(1, client.name)
+            preparedStatement.setString(2, client.publicKey)
+            preparedStatement.executeUpdate()
             connection!!.close()
         }
 
@@ -68,8 +74,10 @@ class DataManager {
         }
 
         fun deleteClient(client: Client) {
-            val sql = "DELETE FROM clients WHERE public_key = ${client.publicKey}"
-            connection!!.createStatement().executeUpdate(sql)
+            val sql = "DELETE FROM clients WHERE public_key = ?"
+            val preparedStatement = connection!!.prepareStatement(sql)
+            preparedStatement.setString(1, client.publicKey)
+            preparedStatement.executeUpdate()
             connection!!.close()
         }
 

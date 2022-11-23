@@ -1,3 +1,4 @@
+import crypto.CryptoInit
 import crypto.RSAHelper
 import java.security.KeyPair
 import java.security.PrivateKey
@@ -9,6 +10,10 @@ class CryptoManager {
 
     init {
         // Crypto Setup, Create Cert, Create Public Key
+
+        CryptoInit.setSecurityProvider()
+        CryptoInit.setJVMProperties()
+
         rsaKeyPair = RSAHelper.getKeyPair()
     }
 

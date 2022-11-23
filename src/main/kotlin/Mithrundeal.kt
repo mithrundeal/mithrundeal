@@ -9,7 +9,7 @@ import kotlin.concurrent.fixedRateTimer
 class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
 
     private val dataManager: DataManager = DataManager()
-    private val cryptoManager: CryptoManager = CryptoManager()
+    private val cryptoManager: CryptoManager
 
     private val selectorManager = SelectorManager(Dispatchers.IO)
     private val serverSocket = aSocket(selectorManager).tcp().bind("0.0.0.0", port)
@@ -22,7 +22,7 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
 
     init {
         //Server & Client Setup
-
+        cryptoManager = CryptoManager()
     }
 
     public fun start() {

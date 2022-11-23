@@ -16,14 +16,12 @@ import java.util.*
 lateinit var rsaKeyPair: KeyPair
 fun main(args: Array<String>) {
 
-    //runBlocking {
-    //    async {
-    //        val mithrundealNetwork: Mithrundeal = Mithrundeal("my-network-secret-separator")
-    //        mithrundealNetwork.start()
-    //    }
-    //}
-    CryptoInit.setSecurityProvider()
-    CryptoInit.setJVMProperties()
+    runBlocking {
+        async {
+            val mithrundealNetwork: Mithrundeal = Mithrundeal("my-network-secret-separator")
+            mithrundealNetwork.start()
+        }
+    }
 
     rsaKeyPair = RSAHelper.getKeyPair()
 

@@ -1,7 +1,5 @@
 package crypto
 
-import org.bouncycastle.util.encoders.Hex
-import java.security.GeneralSecurityException
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
@@ -11,12 +9,18 @@ import javax.crypto.spec.SecretKeySpec
 class AESHelper {
 
     companion object {
-        fun getRandomAESKey(): SecretKey {
+        /**
+         * get random AES key
+         */
+        fun getRandomAESKey(keySize: Int = 256): SecretKey {
             val keyGenerator = javax.crypto.KeyGenerator.getInstance("AES", "BCFIPS")
-            keyGenerator.init(256)
+            keyGenerator.init(keySize)
             return keyGenerator.generateKey()
         }
 
+        /**
+         * contruct key from byte array
+         */
         fun constructKey(keyBytes: ByteArray): SecretKey {
             if (keyBytes.size != 16 && keyBytes.size != 24 && keyBytes.size != 32) {
                 //throw java.lang.IllegalArgumentException("key bytes wrong for AES key")
@@ -24,6 +28,10 @@ class AESHelper {
             return SecretKeySpec(keyBytes, "AES")
         }
 
+        /**
+         * NEVER USE SAME IV VALUE FOR ENCRYPT
+         * iv value can be added to the end or beginning of the encrypted data.
+         */
         fun ctrEncrypt(key: SecretKey, data: ByteArray): Array<ByteArray> {
             val cipher = Cipher.getInstance("AES/CTR/NoPadding", "BCFIPS")
             var bytes = ByteArray(12)
@@ -33,6 +41,9 @@ class AESHelper {
             return arrayOf(cipher.iv, cipher.doFinal(data))
         }
 
+        /**
+         * ctr mode decrypt
+         */
         fun ctrDecrypt(key: SecretKey, iv: ByteArray, cipherText: ByteArray): ByteArray {
             val cipher = Cipher.getInstance("AES/CTR/NoPadding", "BCFIPS")
             cipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(iv))

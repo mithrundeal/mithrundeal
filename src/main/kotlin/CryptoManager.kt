@@ -1,5 +1,6 @@
 import crypto.CryptoInit
 import crypto.RSAHelper
+import org.bouncycastle.util.encoders.Hex
 import java.security.KeyPair
 import java.security.PrivateKey
 import java.security.PublicKey
@@ -17,9 +18,9 @@ class CryptoManager {
         rsaKeyPair = RSAHelper.getKeyPair()
     }
 
-    fun getPublicKey(): PublicKey {
+    fun getPublicKey(): String {
         //return "test_publi_key_${Random.nextInt(0, 100)}"
-        return rsaKeyPair.public
+        return Hex.toHexString(rsaKeyPair.public.encoded)
     }
 
     fun getPrivateKey(): PrivateKey {

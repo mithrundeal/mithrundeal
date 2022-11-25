@@ -13,15 +13,16 @@ class Drbg {
     companion object {
         /**
          * get random for general purposes
+         * default value is 256 bit
          * @return SecureRandom based on SP800-90A
          */
-        fun getSecureRandom(): FipsSecureRandom {
+        fun getSecureRandom(size: Int = 256): FipsSecureRandom {
             val entropySourceProvider: EntropySourceProvider = BasicEntropySourceProvider(SecureRandom(), true)
             val drbgBuilder: FipsDRBG.Builder = FipsDRBG.SHA512_HMAC.fromEntropySource(entropySourceProvider)
-                .setSecurityStrength(256)
-                .setEntropyBitsRequired(256)
+                .setSecurityStrength(size)
+                .setEntropyBitsRequired(size)
 
-            val byteArray = ByteArray(256)
+            val byteArray = ByteArray(size)
             SecureRandom().nextBytes(byteArray)//provided from BC-FIPS
             return drbgBuilder.build(byteArray, true)
         }

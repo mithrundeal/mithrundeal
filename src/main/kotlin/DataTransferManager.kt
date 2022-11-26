@@ -45,14 +45,15 @@ class DataTransferManager {
 
                 val aesKey = AESHelper.getRandomAESKey()
 
-                val clientRSAPublicKey = RSAHelper.generatePublicKey(publicKeys.get(socket)!!.toByteArray())
+                val clientRSAPublicKey = RSAHelper.generatePublicKey(publicKeys.get(socket)!!.decodeHex())
                 val aesKeyCrypted = RSAHelper.rsaEncrypt(clientRSAPublicKey, aesKey.encoded)
                 val aesKeyCryptedHex = aesKeyCrypted.toHexString()
 
                 activeSockets.add(Client(socket = socket, AESKey = aesKey.encoded.toHexString()))
 
                 AESKeys.put(socket, aesKeyCryptedHex)
-                writer.println(TransferData(102, aesKeyCryptedHex))
+                println("SEND AES -> $aesKeyCryptedHex")
+                writer.println(TransferData(102, aesKeyCryptedHex).toJSON())
             }
             102 -> {
                 //AES Key
@@ -62,6 +63,8 @@ class DataTransferManager {
 
                 val clientAESKey = transferData.data!!
                 AESKeys.put(socket, clientAESKey)
+
+                println("AES KEY -> $clientAESKey")
 
                 activeSockets.add(Client(socket = socket, AESKey = clientAESKey))
             }

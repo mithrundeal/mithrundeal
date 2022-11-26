@@ -6,7 +6,7 @@ import java.sql.DriverManager
 import java.sql.SQLException
 
 class DataManager {
-    companion object {
+    /*companion object {
         private var clients: List<Client> = listOf<Client>()
         private var connection: Connection? = null
 
@@ -113,5 +113,5 @@ class DataManager {
             println("Product version: " + dm.databaseProductVersion)
             connection!!.close()
         }
-    }
+    }*/
 }

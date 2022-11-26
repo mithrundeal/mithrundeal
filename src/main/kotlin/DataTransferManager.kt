@@ -52,7 +52,6 @@ class DataTransferManager {
                 activeSockets.add(Client(socket = socket, AESKey = aesKey.encoded.toHexString(), writer = writer))
 
                 AESKeys.put(socket, aesKey.encoded.toHexString())
-                println("SEND AES -> ${aesKey.encoded.toHexString()}")
                 writer.println(TransferData(102, aesKeyCryptedHex).toJSON())
             }
             102 -> {
@@ -62,12 +61,7 @@ class DataTransferManager {
                     return
 
                 val clientAESKey = transferData.data!!
-
-
-                println("AES KEY -> $clientAESKey")
-
                 val plainAESKey = RSAHelper.rsaDecrypt(selfCryptoManager.getPrivateKey(), clientAESKey.decodeHex())
-                println("AES KEY -> ${plainAESKey.toHexString()}")
                 AESKeys.put(socket, plainAESKey.toHexString())
                 activeSockets.add(Client(socket = socket, AESKey = plainAESKey.toHexString(), writer = writer))
             }
@@ -79,11 +73,6 @@ class DataTransferManager {
 
                 val aesCryptedData = AESCryptedData.fromJSON(transferData.data!!)
 
-                println("Data Transfer AES Key")
-                println(AESKeys.get(socket)!!)
-                println(aesCryptedData.iv)
-                println(aesCryptedData.encryptedData.decodeHex())
-
                 val hexAES = AESHelper.constructKey(AESKeys.get(socket)!!.decodeHex())
 
                 val aesDecryption = AESHelper.ctrDecrypt(
@@ -92,7 +81,7 @@ class DataTransferManager {
                     aesCryptedData.encryptedData.decodeHex()
                 )
 
-                println(String(aesDecryption))
+                println(socket.remoteSocketAddress.toString()+" -> "+String(aesDecryption))
             }
             else -> println("Unknown Process Code!")
         }

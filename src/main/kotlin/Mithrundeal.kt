@@ -64,7 +64,7 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
     fun connectToServer(IPLastPart: Int) {
 
         try {
-            println(localAddressPrefix+"."+IPLastPart+":"+port)
+            //println(localAddressPrefix+"."+IPLastPart+":"+port)
             serverSocket = Socket(localAddressPrefix+"."+IPLastPart,  port)
 
             val writer = PrintWriter(serverSocket!!.getOutputStream(), true)
@@ -76,7 +76,7 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
                 dataTransferManager.doFinal(jsonData, reader, writer, serverSocket!!, cryptoManager)
             }
         }catch (e: ConnectException) {
-            println(e.message + " -> "  + IPLastPart)
+            //println(e.message + " -> "  + IPLastPart)
         }
 
     }

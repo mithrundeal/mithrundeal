@@ -18,9 +18,9 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.bouncycastle:bc-fips:1.0.2.3")
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.xerial:sqlite-jdbc:3.39.4.1")
+    implementation("com.google.code.gson:gson:2.10")
 
 }
 

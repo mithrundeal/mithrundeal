@@ -1,7 +1,6 @@
 package crypto
 
 import java.io.ByteArrayOutputStream
-import java.security.Key
 import java.security.KeyStore
 import javax.crypto.SecretKey
 
@@ -13,11 +12,11 @@ class BCFKSHelper {
          * get KeyStore object
          */
 
-        fun getKeyStore(): KeyStore {
-            val keyStore = KeyStore.getInstance("BCFKS", "BCFIPS")
+        /*fun getKeyStore(): KeyStore {
+            val keyStore = KeyStore.getInstance()
             keyStore.load(null, null)
             return keyStore;
-        }
+        }*/
 
 
         /**
@@ -27,7 +26,7 @@ class BCFKSHelper {
          *
          * stores key to bcfks
          */
-        fun storeSecretKey(
+        /*fun storeSecretKey(
             alias: String,
             storePassword: CharArray,
             keyPass: CharArray,
@@ -39,7 +38,7 @@ class BCFKSHelper {
             val bOut = ByteArrayOutputStream()
             keyStore.store(bOut, storePassword)
             return bOut.toByteArray()
-        }
+        }*/
 
 
     }

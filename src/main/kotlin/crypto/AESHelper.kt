@@ -13,7 +13,7 @@ class AESHelper {
          * get random AES key
          */
         fun getRandomAESKey(keySize: Int = 256): SecretKey {
-            val keyGenerator = javax.crypto.KeyGenerator.getInstance("AES", "BCFIPS")
+            val keyGenerator = javax.crypto.KeyGenerator.getInstance("AES")
             keyGenerator.init(keySize)
             return keyGenerator.generateKey()
         }
@@ -33,7 +33,7 @@ class AESHelper {
          * iv value can be added to the end or beginning of the encrypted data.
          */
         fun ctrEncrypt(key: SecretKey, data: ByteArray): Array<ByteArray> {
-            val cipher = Cipher.getInstance("AES/CTR/NoPadding", "BCFIPS")
+            val cipher = Cipher.getInstance("AES/CTR/NoPadding")
             var bytes = ByteArray(12)
             Drbg.getSecureRandom().nextBytes(bytes)
             cipher.init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(bytes))
@@ -45,7 +45,7 @@ class AESHelper {
          * ctr mode decrypt
          */
         fun ctrDecrypt(key: SecretKey, iv: ByteArray, cipherText: ByteArray): ByteArray {
-            val cipher = Cipher.getInstance("AES/CTR/NoPadding", "BCFIPS")
+            val cipher = Cipher.getInstance("AES/CTR/NoPadding")
             cipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(iv))
             return cipher.doFinal(cipherText)
         }

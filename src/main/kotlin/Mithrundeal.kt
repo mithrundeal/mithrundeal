@@ -1,3 +1,4 @@
+import model.TransferData
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
@@ -9,8 +10,7 @@ import java.net.Socket
 class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
 
     private val dataManager: DataManager = DataManager()
-    private var cryptoManager: CryptoManager? = null
-
+    private val cryptoManager: CryptoManager = CryptoManager()
     private val localAddress : String = detectLocalAddress()
     private val localAddressParts = localAddress.split(".")
     private val localAddressLastPart : Int = Integer.parseInt(localAddressParts[localAddressParts.lastIndex].toString())
@@ -22,7 +22,6 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
     }
 
     public fun start() {
-        cryptoManager = CryptoManager()
         Thread { startServer() }.start()
         scanLocalNetwork()
     }
@@ -48,32 +47,30 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
 
         println((socket.localAddress?.hostAddress ?: "Unknown IP") + " - Accepted for handshake.")
         val reader = BufferedReader(InputStreamReader(socket.inputStream))
+        val writer = PrintWriter(socket.getOutputStream(), true)
         while(true) {
-            val processCode = reader.readLine()
-            println("Code -> $processCode")
-            when(processCode) {
-                "100" -> {
-                    val publicKey = reader.readLine()
-                    println("100 Connection Handshake")
-                    println("public key -> $publicKey")
-                }
-                else -> println("Unknown Process Code!")
-            }
-
-
+            val jsonData = reader.readLine()
+            DataTransferManager.doFinal(jsonData, reader, writer, socket, cryptoManager)
         }
-
     }
 
     var serverSocket: Socket? = null
     fun connectToServer(IPLastPart: Int) {
+
         try {
-            serverSocket = Socket(localAddressPrefix+"."+IPLastPart,  port)
             println(localAddressPrefix+"."+IPLastPart+":"+port)
-            val output = PrintWriter(serverSocket!!.getOutputStream(), true)
-            output.println(100)
-            output.println()
-        }catch (e: ConnectException){
+            serverSocket = Socket(localAddressPrefix+"."+IPLastPart,  port)
+            val writer = PrintWriter(serverSocket!!.getOutputStream(), true)
+            writer.println(TransferData(100, "public_key_datata").toJSON())
+
+            val reader = BufferedReader(InputStreamReader(serverSocket!!.inputStream))
+            while(true) {
+                val jsonData = reader.readLine()
+                DataTransferManager.doFinal(jsonData, reader, writer, serverSocket!!, cryptoManager)
+            }
+
+
+        }catch (e: ConnectException) {
             println(e.message + " -> "  + IPLastPart)
         }
 
@@ -82,13 +79,10 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
     private var connectionThreads : MutableList<Thread> = mutableListOf()
     private fun scanLocalNetwork() {
 
-        while (serverSocket != null)
-
         for (x in 2..254) {
 
-            /*if(x == localAddressLastPart)
-                    continue*/
-
+            if(x == localAddressLastPart)
+                    continue
 
             Thread{
                 connectToServer(x)

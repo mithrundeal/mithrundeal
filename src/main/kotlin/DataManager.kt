@@ -1,3 +1,4 @@
+import com.google.gson.Gson
 import model.Client
 import java.sql.Connection
 import java.sql.DatabaseMetaData
@@ -56,6 +57,22 @@ class DataManager {
             }
             connection!!.close()
             return clients
+        }
+
+        fun getClientsListToJSON(): String? {
+            return Gson().toJson(getClientList())
+        }
+
+        fun getClientsJSONToList(clientsJSON: String): List<Client>{
+            return Gson().fromJson(clientsJSON, Array<Client>::class.java).asList()
+        }
+
+        fun getClientToJSON(client: Client): String? {
+            return Gson().toJson(client)
+        }
+
+        fun getJSONToClient(clientJSON: String): Client{
+            return Gson().fromJson(clientJSON, Client::class.java)
         }
 
         fun saveClient(client: Client) {

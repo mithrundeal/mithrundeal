@@ -51,7 +51,7 @@ class DataTransferManager {
 
                 activeSockets.add(Client(socket = socket, AESKey = aesKey.encoded.toHexString(), writer = writer))
 
-                AESKeys.put(socket, aesKeyCryptedHex)
+                AESKeys.put(socket, aesKey.encoded.toHexString())
                 println("SEND AES -> ${aesKey.encoded.toHexString()}")
                 writer.println(TransferData(102, aesKeyCryptedHex).toJSON())
             }
@@ -92,7 +92,7 @@ class DataTransferManager {
                     aesCryptedData.encryptedData.decodeHex()
                 )
 
-                println(aesDecryption.toString())
+                println(String(aesDecryption))
             }
             else -> println("Unknown Process Code!")
         }

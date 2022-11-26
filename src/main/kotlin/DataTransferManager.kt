@@ -66,10 +66,10 @@ class DataTransferManager {
 
                 println("AES KEY -> $clientAESKey")
 
-                val hexAESKey = RSAHelper.rsaDecrypt(selfCryptoManager.getPrivateKey(), clientAESKey.decodeHex())
-                println("AES KEY -> ${hexAESKey.toHexString()}")
-                AESKeys.put(socket, hexAESKey.toString())
-                activeSockets.add(Client(socket = socket, AESKey = hexAESKey.toString(), writer = writer))
+                val plainAESKey = RSAHelper.rsaDecrypt(selfCryptoManager.getPrivateKey(), clientAESKey.decodeHex())
+                println("AES KEY -> ${plainAESKey.toHexString()}")
+                AESKeys.put(socket, plainAESKey.toHexString())
+                activeSockets.add(Client(socket = socket, AESKey = plainAESKey.toHexString(), writer = writer))
             }
             200 -> {
                 //Encrypted data transfer

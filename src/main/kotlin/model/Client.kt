@@ -1,9 +1,11 @@
 package model
 
-class Client(
-    var IPLastPart: Int,
+import java.net.Socket
+
+data class Client(
     var name: String = "Unknown Client",
-    var publicKey: String
+    var AESKey: String,
+    var socket: Socket,
 ) {
 
 }

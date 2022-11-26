@@ -1,3 +1,4 @@
+import model.Client
 import model.TransferData
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -10,6 +11,7 @@ import java.net.Socket
 class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
 
     private val dataManager: DataManager = DataManager()
+    private val dataTransferManager: DataTransferManager = DataTransferManager()
     private val cryptoManager: CryptoManager = CryptoManager()
     private val localAddress : String = detectLocalAddress()
     private val localAddressParts = localAddress.split(".")
@@ -50,7 +52,7 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
         val writer = PrintWriter(socket.getOutputStream(), true)
         while(true) {
             val jsonData = reader.readLine()
-            DataTransferManager.doFinal(jsonData, reader, writer, socket, cryptoManager)
+            dataTransferManager.doFinal(jsonData, reader, writer, socket, cryptoManager)
         }
     }
 
@@ -60,23 +62,21 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
         try {
             println(localAddressPrefix+"."+IPLastPart+":"+port)
             serverSocket = Socket(localAddressPrefix+"."+IPLastPart,  port)
+
             val writer = PrintWriter(serverSocket!!.getOutputStream(), true)
-            writer.println(TransferData(100, "public_key_datata").toJSON())
+            writer.println(TransferData(100, cryptoManager.getPublicKey()).toJSON())
 
             val reader = BufferedReader(InputStreamReader(serverSocket!!.inputStream))
             while(true) {
                 val jsonData = reader.readLine()
-                DataTransferManager.doFinal(jsonData, reader, writer, serverSocket!!, cryptoManager)
+                dataTransferManager.doFinal(jsonData, reader, writer, serverSocket!!, cryptoManager)
             }
-
-
         }catch (e: ConnectException) {
             println(e.message + " -> "  + IPLastPart)
         }
 
     }
 
-    private var connectionThreads : MutableList<Thread> = mutableListOf()
     private fun scanLocalNetwork() {
 
         for (x in 2..254) {
@@ -89,6 +89,17 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
             }.start()
 
             //connectionThreads.last().start()
+        }
+    }
+
+
+    fun peerList() : List<Client> {
+        return dataTransferManager.activeSockets.toList()
+    }
+
+    companion object{
+        fun sendData(socket: Socket?, data: String?) {
+
         }
     }
 

@@ -4,7 +4,7 @@ import com.google.gson.Gson
 
 data class TransferData(var processCode: Int, var data: String? = null) {
 
-    fun toJSON() : String{
+    fun toJSON() : String {
         return Gson().toJson(this)
     }
 

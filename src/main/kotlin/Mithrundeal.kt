@@ -1,3 +1,6 @@
+import crypto.AESHelper
+import crypto.CryptoUtility.Companion.decodeHex
+import model.AESCryptedData
 import model.Client
 import model.TransferData
 import java.io.BufferedReader
@@ -97,10 +100,11 @@ class Mithrundeal(val networkPassKey: String, val port: Int = 57611) {
         return dataTransferManager.activeSockets.toList()
     }
 
-    companion object{
-        fun sendData(socket: Socket?, data: String?) {
-
-        }
+    fun sendData(client: Client , data: String) {
+        val aesKey = AESHelper.constructKey(client.AESKey.decodeHex())
+        val encrptedData =  AESHelper.ctrEncrypt(aesKey, data.toByteArray())
+        val aesCryptedData = AESCryptedData(iv = encrptedData[0], encryptedData = encrptedData[1].toString())
+        client.writer.println(TransferData(200, aesCryptedData.toJSON()));
     }
 
     private fun detectLocalAddress():String{

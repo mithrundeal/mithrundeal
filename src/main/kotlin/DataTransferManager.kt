@@ -49,7 +49,7 @@ class DataTransferManager {
                 val aesKeyCrypted = RSAHelper.rsaEncrypt(clientRSAPublicKey, aesKey.encoded)
                 val aesKeyCryptedHex = aesKeyCrypted.toHexString()
 
-                activeSockets.add(Client(socket = socket, AESKey = aesKey.encoded.toHexString()))
+                activeSockets.add(Client(socket = socket, AESKey = aesKey.encoded.toHexString(), writer = writer))
 
                 AESKeys.put(socket, aesKeyCryptedHex)
                 println("SEND AES -> ${aesKey.encoded.toHexString()}")
@@ -67,9 +67,9 @@ class DataTransferManager {
                 println("AES KEY -> $clientAESKey")
 
                 val hexAESKey = RSAHelper.rsaDecrypt(selfCryptoManager.getPrivateKey(), clientAESKey.toByteArray())
-                println("AES KEY -> $hexAESKey")
+                println("AES KEY -> ${hexAESKey.toHexString()}")
                 AESKeys.put(socket, hexAESKey.toString())
-                activeSockets.add(Client(socket = socket, AESKey = hexAESKey.toString()))
+                activeSockets.add(Client(socket = socket, AESKey = hexAESKey.toString(), writer = writer))
             }
             200 -> {
                 //Encrypted data transfer
@@ -97,7 +97,4 @@ class DataTransferManager {
             else -> println("Unknown Process Code!")
         }
     }
-
-
-
 }

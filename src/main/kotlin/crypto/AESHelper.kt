@@ -34,7 +34,7 @@ class AESHelper {
          */
         fun ctrEncrypt(key: SecretKey, data: ByteArray): Array<ByteArray> {
             val cipher = Cipher.getInstance("AES/CTR/NoPadding")
-            var bytes = ByteArray(12)
+            var bytes = ByteArray(16)
             Drbg.getSecureRandom().nextBytes(bytes)
             cipher.init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(bytes))
             bytes = ByteArray(12)

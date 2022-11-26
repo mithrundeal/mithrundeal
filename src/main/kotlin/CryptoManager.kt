@@ -2,6 +2,7 @@ import crypto.CryptoInit
 import crypto.RSAHelper
 import crypto.CryptoUtility.Companion.toHexString
 import java.security.KeyPair
+import java.security.PrivateKey
 
 class CryptoManager {
     lateinit var rsaKeyPair: KeyPair
@@ -20,8 +21,8 @@ class CryptoManager {
         return rsaKeyPair.public.encoded.toHexString()
     }
 
-    fun getPrivateKey(): String {
-        return "test_public_key" //rsaKeyPair.private
+    fun getPrivateKey(): PrivateKey {
+        return rsaKeyPair.private
     }
 
     fun rsaEncryption(plainData: String): ByteArray {
